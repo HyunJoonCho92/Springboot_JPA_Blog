@@ -1,15 +1,18 @@
 package com.hj.blog.model;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,9 +43,14 @@ public class Board {
 	@ColumnDefault("0")
 	private int count; // 조회수
 	
-	@ManyToOne // Many = Board, User = one 즉 한명의 유저는 여러개의 보드를 쓸 수 있다.
+	@ManyToOne(fetch = FetchType.EAGER) // Many = Board, User = one 즉 한명의 유저는 여러개의 보드를 쓸 수 있다. 
 	@JoinColumn(name="userId")
 	private User user; //DB에는 오브젝트를 저장할 수 없다. FK, 자바는 오브젝트를 저장할 수 있고
+	
+	@OneToMany(mappedBy = "board", fetch = FetchType.EAGER) //mappedBy가 적혀있으면 연관관계의 주인이 아니다(다시말해 난 FK가 아니다). 따라서 DB에 컬럼 만들지마!
+	private List<Reply> reply;
+	
+	
 	
 	@CreationTimestamp //데이터가 insert 될때 자동으로 시간 들어감
 	private Timestamp createDate;
